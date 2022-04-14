@@ -1,0 +1,26 @@
+version: "3.3"
+   
+services:
+  db:
+    image: postgis/postgis:13-3.1
+    expose:
+      - "5432"
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  web:
+    build: .
+    volumes:
+      - .:/usr/src
+    ports:
+      - "9202:9202"
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    depends_on:
+      - db
+

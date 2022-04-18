@@ -163,4 +163,8 @@ cython_debug/
 # project-specific
 ###
 
-data/
+#postgres docker container
+data/ 
+
+#static development files
+static/

@@ -168,3 +168,6 @@ data/
 
 #static development files
 static/
+
+#gtfs 
+gtfs/gtfs

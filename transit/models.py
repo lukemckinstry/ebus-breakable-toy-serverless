@@ -36,7 +36,7 @@ class Agency(models.Model):
     num_vehicles = models.IntegerField(blank=True, null=True)
     num_zero_emission_vehicles = models.IntegerField(blank=True, null=True)
     gtfs_url = models.CharField(max_length=100, blank=True) ## for management process
-    accepted_domains = ArrayField(models.CharField(max_length=100), blank=True)
+    accepted_domains = ArrayField(models.CharField(max_length=100), blank=True, null=True)
 
     def __str__(self):
         return self.agency_name +':'+ self.agency_id

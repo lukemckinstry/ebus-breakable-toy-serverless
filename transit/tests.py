@@ -78,6 +78,18 @@ class LoadfeedsTests(TestCase):
         self.assertEqual(qs[0].agency_url, "http://www.catabus.com")
 
 
+def create_agency(self):
+    url = reverse("agency_list")
+    data = {
+        "name": "TestAgency",
+        "agency_id": "TestAgency",
+        "agency_name": "TestAgency",
+        "agency_url": "www.example.com",
+    }
+    response = self.client.post(url, data, format="json")
+    return response
+
+
 class AgencyTests(APITestCase):
     def test_create_agency(self):
         """

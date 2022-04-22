@@ -141,6 +141,7 @@ class RouteTests(APITestCase):
         _ = create_route(self, agency)
         route = Route.objects.get()
         test_route_id = route.id
+        print("test route id --> ", test_route_id)
         url = reverse(
             "route-detail",
             args=[

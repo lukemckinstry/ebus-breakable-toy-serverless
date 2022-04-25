@@ -1,5 +1,5 @@
-version: "3.3"
-   
+version: "2.1"
+
 services:
   db:
     image: postgis/postgis:13-3.1
@@ -11,6 +11,11 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 3s
+      timeout: 3s
+      retries: 3
   web:
     build: .
     volumes:
@@ -22,5 +27,5 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     depends_on:
-      - db
-
+      db:
+        condition: service_healthy

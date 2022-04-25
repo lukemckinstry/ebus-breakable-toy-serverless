@@ -92,6 +92,7 @@ class Route(models.Model):
 
     ### managed by djangorestframework-mvt
     vector_tiles = MVTManager(geo_col="mpoly")
+    objects = models.Manager()
 
     # Returns the string representation of the model.
     def __str__(self):

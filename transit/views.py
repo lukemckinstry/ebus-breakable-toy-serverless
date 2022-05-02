@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from .serializers import AgencySerializer, RouteSerializer
 from .models import Agency, Route
@@ -24,6 +24,11 @@ def basic_map(request):
     # found in the Mapbox account settings and getting started instructions
     # see https://www.mapbox.com/account/ under the "Access tokens" section
     return render(request, "transit/index.html")
+
+
+def route_bbox(request, pk):
+    r = Route.objects.get(id=pk).mpoly.extent
+    return JsonResponse({"bbox": r})
 
 
 class AgencyViewSet(viewsets.ModelViewSet):

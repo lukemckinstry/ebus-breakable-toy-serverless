@@ -3,6 +3,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.conf.global_settings import LANGUAGES
 import uuid
 import pytz
+from rest_framework_mvt.managers import MVTManager
 
 TIMEZONES = [tuple([i, i]) for i in pytz.all_timezones]
 
@@ -92,6 +93,10 @@ class Route(models.Model):
     zev_notes = models.TextField(blank=True, null=True)
     pct_zev_service = models.FloatField(blank=True, null=True)
     num_zev = models.IntegerField(blank=True, null=True)
+
+    ### managed by djangorestframework-mvt
+    vector_tiles = MVTManager(geo_col="mpoly")
+    objects = models.Manager()
 
     # Returns the string representation of the model.
     def __str__(self):

@@ -3,19 +3,12 @@ from django.contrib import admin
 from .models import Agency, Route
 
 
-class RouteInline(admin.StackedInline):
-    model = Route
-
-
 class AgencyAdmin(admin.ModelAdmin):
     search_fields = ["agency_name"]
-    inlines = [
-        RouteInline,
-    ]
     list_display = [
+        "agency_name",
         "name",
         "gtfs_url",
-        "agency_name",
         "num_routes",
         "agency_url",
         "num_vehicles",

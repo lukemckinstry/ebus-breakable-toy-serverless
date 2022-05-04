@@ -22,6 +22,7 @@ urlpatterns = [
     path("agency/<str:agency_pk>/route", route_list, name="route-list"),
     path("route/tiles", mvt_view_factory(Route)),
     path("route/<str:pk>/", route_detail, name="route-detail"),
+    path("route/bbox/<str:pk>/", views.route_bbox, name="route-bbox"),
     path("basicmap/", views.basic_map),
     path("route/", route_create, name="route-create"),
     path("", views.index, name="index"),

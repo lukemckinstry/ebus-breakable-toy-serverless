@@ -13,7 +13,7 @@ class LoadfeedsTests(TestCase):
         Ensure ingest of known gtfs file produces expected values for agency url
         and number of routes in database
         """
-        args = ["--debug"]
+        args = ["--sample"]
         opts = {}
         call_command("loadfeeds", *args, **opts)
 
@@ -60,31 +60,6 @@ def create_route(self, agency):
         "zev_notes": "",
         "pct_zev_service": "0.0",
         "num_zev": "0",
-    }
-    response = self.client.post(url, data, format="json")
-    return response
-
-
-class LoadfeedsTests(TestCase):
-    def test_loadfeeds(self):
-        """
-        Ensure ingest of known gtfs file produces expected values for agency url
-        and number of routes in database
-        """
-        loadfeeds.main("cata")
-        qs = Agency.objects.filter(agency_name="CATA")
-        num_routes = qs[0].route_set.count()
-        self.assertIs(num_routes, 9)
-        self.assertEqual(qs[0].agency_url, "http://www.catabus.com")
-
-
-def create_agency(self):
-    url = reverse("agency_list")
-    data = {
-        "name": "TestAgency",
-        "agency_id": "TestAgency",
-        "agency_name": "TestAgency",
-        "agency_url": "www.example.com",
     }
     response = self.client.post(url, data, format="json")
     return response

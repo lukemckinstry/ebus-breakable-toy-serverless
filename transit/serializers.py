@@ -33,11 +33,6 @@ class RouteSerializer(serializers.ModelSerializer):
             "num_zev",
         ]
 
-    def update(self, instance, validated_data):
-        route_id = validated_data.pop("id")
-        route = Route.objects.update(id=route_id, **validated_data)
-        return route
-
 
 class AgencySerializer(serializers.ModelSerializer):
     class Meta:

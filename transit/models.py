@@ -66,7 +66,7 @@ class Route(models.Model):
     route_id = models.CharField(max_length=50)  # required
     route_short_name = models.CharField(max_length=50, blank=True)
     route_long_name = models.CharField(max_length=100, blank=True)
-    route_desc = models.CharField(max_length=500)
+    route_desc = models.CharField(max_length=500, blank=True)
 
     # required, this will always be 3
     route_type = models.CharField(max_length=50, choices=ROUTE_TYPES)

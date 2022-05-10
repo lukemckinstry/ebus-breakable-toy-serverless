@@ -57,6 +57,8 @@ MIDDLEWARE = [
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = ("http://localhost:3000",)
 
+CSRF_COOKIE_NAME = "XCSRF-TOKEN"
+
 ROOT_URLCONF = "ebusserver.urls"
 
 TEMPLATES = [

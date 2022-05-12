@@ -17,7 +17,8 @@ LOG = logging.getLogger()
 def get_gtfs_agency_zips(sample):
     pwd = os.path.dirname(os.path.abspath(__file__))
     LOG.debug(pwd)
-    if sample:
+    init_files = glob.glob(pwd + "/*.zip")
+    if sample and not init_files:
         LOG.info("retrieve sample gtfs file {}".format(sample))
         try:
             resultFilePath, responseHeaders = urllib.request.urlretrieve(

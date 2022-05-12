@@ -1,0 +1,19 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - develop
+      - feature/lcm/**
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Start the containers
+        run: docker-compose up -d
+      - name: Run Test
+        run: docker-compose exec -T web python manage.py test transit

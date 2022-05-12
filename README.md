@@ -10,28 +10,43 @@ Collects municipal bus transit routes and facilitates anotation to show adoption
 
 * Docker
 
-### Installing
+### Setup Development Environment
 
 * Build containers 
 ```
-docker-compose build
+.scripts/setup
 ```
 
-### Executing program
+### Executing Program
 
 * Run containers 
 ```
-docker-compose up
+./scripts/server
 ```
 Open [http://localhost:9202](http://localhost:9202) to view it in the browser.
-* Run migrations, create superuser, collect static files
+
+* Update development environment:
+    * Run migrations
+    * Create superuser
+    * Collect static files
+    * Gather sample GTFS data for testing purposes
 ```
-docker-compose exec web python manage.py migrate
-docker-compose exec web python manage.py createsuperuser
-docker-compose exec web python manage.py collectstatic
+./scripts/update
 ```
-* Download sample gtfs data 
+
+* Run tests
 
 ```
-docker-compose exec web python manage.py loadfeeds --sample
+./scripts/tests
 ```
+
+### STRTA
+
+This project uses [`scripts-to-rule-them-all`](https://github.com/azavea/architecture/blob/master/doc/arch/adr-0000-scripts-to-rule-them-all.md) to bootstrap, test, and maintain projects consistently across all teams. Below is a quick explanation for the specific usage of each script.
+
+| Script      | Use                                                        |
+| ----------- | ---------------------------------------------------------- |
+| `server`    | Start the application backend server                       |
+| `setup`     | Setup the project development environment                  |
+| `test`      | Run linters and tests                                      |
+| `update`    | Update project, assemble, run migrations                   |

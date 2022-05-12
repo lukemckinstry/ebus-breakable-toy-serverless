@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -e
+
+if [[ -n "${EBUSTRANSIT_DEBUG}" ]]; then
+    set -x
+fi
+
+function usage() {
+    echo -n \
+        "Usage: $(basename "$0")
+Attempts to setup the project's development environment.
+"
+}
+
+if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
+    if [ "${1:-}" = "--help" ]; then
+        usage
+    else
+
+        ./scripts/update
+        
+        # Bring up PostgreSQL and Django
+        docker-compose up -d
+
+        # Create Django superuser
+        docker-compose exec web python manage.py createsuperuser     
+
+        docker-compose down
+
+    fi
+fi

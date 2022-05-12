@@ -17,23 +17,14 @@ if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
     if [ "${1:-}" = "--help" ]; then
         usage
     else
-        # Ensure container images are current
-        docker-compose build
 
+        ./scripts/update
+        
         # Bring up PostgreSQL and Django
         docker-compose up -d
 
-        # Apply any outstanding Django migrations
-        docker-compose exec web python manage.py migrate
-
         # Create Django superuser
-        docker-compose exec web python manage.py createsuperuser
-
-        # Collect Django static files
-        docker-compose exec web python manage.py collectstatic --no-input
-
-        #gather & load a sample gtfs file for testing purposes 
-        docker-compose exec web python manage.py loadfeeds --sample        
+        docker-compose exec web python manage.py createsuperuser     
 
         docker-compose down
 

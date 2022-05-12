@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.gis",
     "rest_framework",
     "transit",
+    "transit.user",
 ]
 
 MIDDLEWARE = [
@@ -67,6 +68,8 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
 }
+
+AUTH_USER_MODEL = "transit_user.User"
 
 TEMPLATES = [
     {

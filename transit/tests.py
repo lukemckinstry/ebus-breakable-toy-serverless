@@ -19,10 +19,10 @@ class LoadfeedsTests(TestCase):
         opts = {}
         call_command("loadfeeds", *args, **opts)
 
-        qs = Agency.objects.filter(agency_name="CATA")
-        num_routes = qs[0].route_set.count()
+        qs = Agency.objects.get(agency_name="CATA")
+        num_routes = qs.route_set.count()
         self.assertIs(num_routes, 9)
-        self.assertEqual(qs[0].agency_url, "http://www.catabus.com")
+        self.assertEqual(qs.agency_url, "http://www.catabus.com")
 
 
 def create_user(self):

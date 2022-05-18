@@ -66,7 +66,7 @@ class Route(models.Model):
     route_id = models.CharField(max_length=50)  # required
     route_short_name = models.CharField(max_length=50, blank=True)
     route_long_name = models.CharField(max_length=100, blank=True)
-    route_desc = models.CharField(max_length=500)
+    route_desc = models.CharField(max_length=500, blank=True)
 
     # required, this will always be 3
     route_type = models.CharField(max_length=50, choices=ROUTE_TYPES)
@@ -89,7 +89,7 @@ class Route(models.Model):
     trips_sunday = models.IntegerField(blank=True)
 
     ### user managed fields
-    zev_charging_infrastrucutre = models.BooleanField(default=False)
+    zev_charging_infrastructure = models.BooleanField(default=False)
     zev_notes = models.TextField(blank=True, null=True)
     pct_zev_service = models.FloatField(blank=True, null=True)
     num_zev = models.IntegerField(blank=True, null=True)

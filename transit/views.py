@@ -1,16 +1,8 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from .serializers import AgencySerializer, RouteSerializer
 from .models import Agency, Route
-from rest_framework import viewsets
-
-from .serializers import AgencySerializer, RouteSerializer
-from .models import Agency, Route
-from rest_framework import viewsets
-
-from .serializers import AgencySerializer, RouteSerializer
-from .models import Agency, Route
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 
 
 def index(request):
@@ -24,6 +16,11 @@ def basic_map(request):
     # found in the Mapbox account settings and getting started instructions
     # see https://www.mapbox.com/account/ under the "Access tokens" section
     return render(request, "transit/index.html")
+
+
+def route_bbox(request, pk):
+    r = Route.objects.get(id=pk).mpoly.extent
+    return JsonResponse({"bbox": r})
 
 
 class AgencyViewSet(viewsets.ModelViewSet):
@@ -43,6 +40,7 @@ class RouteViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = RouteSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         agency = self.kwargs.get("agency_pk")  # supports get request by agency endpoint

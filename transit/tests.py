@@ -1,7 +1,9 @@
 from django.urls import reverse
 from rest_framework import status
 from .models import Agency, Route
-from rest_framework.test import APITestCase
+from transit.user.models import User
+from .views import RouteViewSet
+from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
 from django.test import TestCase
 from django.core.management import call_command
 import json
@@ -17,10 +19,17 @@ class LoadfeedsTests(TestCase):
         opts = {}
         call_command("loadfeeds", *args, **opts)
 
-        qs = Agency.objects.filter(agency_name="CATA")
-        num_routes = qs[0].route_set.count()
+        qs = Agency.objects.get(agency_name="CATA")
+        num_routes = qs.route_set.count()
         self.assertIs(num_routes, 9)
-        self.assertEqual(qs[0].agency_url, "http://www.catabus.com")
+        self.assertEqual(qs.agency_url, "http://www.catabus.com")
+
+
+def create_user(self):
+    url = reverse("user-register")
+    data = {"email": "test@admin.com", "username": "test", "password": "test"}
+    response = self.client.post(url, data, format="json")
+    return response
 
 
 def create_agency(self):
@@ -32,10 +41,11 @@ def create_agency(self):
         "agency_url": "www.example.com",
     }
     response = self.client.post(url, data, format="json")
+
     return response
 
 
-def create_route(self, agency):
+def create_route(self, agency, user):
     test_agency_uuid = agency.id
     url = reverse("route-create")
     data = {
@@ -56,12 +66,19 @@ def create_route(self, agency):
         "trips_friday": "0",
         "trips_saturday": "0",
         "trips_sunday": "0",
-        "zev_charging_infrastrucutre": "False",
+        "zev_charging_infrastructure": "False",
         "zev_notes": "",
         "pct_zev_service": "0.0",
         "num_zev": "0",
     }
-    response = self.client.post(url, data, format="json")
+
+    factory = APIRequestFactory()
+    view = RouteViewSet.as_view({"post": "create"})
+
+    request = factory.post(url, data, format="json")
+    force_authenticate(request, user=user)
+    response = view(request)
+
     return response
 
 
@@ -83,7 +100,9 @@ class RouteTests(APITestCase):
         """
         _ = create_agency(self)
         agency = Agency.objects.get()
-        response = create_route(self, agency)
+        _ = create_user(self)
+        user = User.objects.get()
+        response = create_route(self, agency, user)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Route.objects.count(), 1)
         self.assertEqual(Route.objects.get().route_id, "999")
@@ -94,7 +113,9 @@ class RouteTests(APITestCase):
         """
         _ = create_agency(self)
         agency = Agency.objects.get()
-        create_route(self, agency)
+        _ = create_user(self)
+        user = User.objects.get()
+        create_route(self, agency, user)
         test_agency_uuid = agency.id
         url = reverse(
             "route-list",
@@ -102,6 +123,7 @@ class RouteTests(APITestCase):
                 test_agency_uuid,
             ],
         )
+
         response = self.client.get(url, format="json")
         json_response = json.loads(response.content)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -113,7 +135,9 @@ class RouteTests(APITestCase):
         """
         _ = create_agency(self)
         agency = Agency.objects.get()
-        _ = create_route(self, agency)
+        _ = create_user(self)
+        user = User.objects.get()
+        _ = create_route(self, agency, user)
         route = Route.objects.get()
         test_route_id = route.id
         url = reverse(
@@ -141,12 +165,19 @@ class RouteTests(APITestCase):
             "trips_friday": "0",
             "trips_saturday": "0",
             "trips_sunday": "0",
-            "zev_charging_infrastrucutre": "False",
+            "zev_charging_infrastructure": "False",
             "zev_notes": "",
             "pct_zev_service": "0.0",
             "num_zev": "0",
         }
-        response = self.client.put(url, data, format="json")
+
+        factory = APIRequestFactory()
+        view = RouteViewSet.as_view({"put": "update"})
+
+        request = factory.put(url, data, format="json")
+        force_authenticate(request, user=user)
+        response = view(request, pk=test_route_id)
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Route.objects.count(), 1)
         self.assertEqual(Route.objects.get().route_id, "888")

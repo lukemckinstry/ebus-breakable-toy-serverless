@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.gis",
     "rest_framework",
     "transit",
+    "transit.user",
 ]
 
 MIDDLEWARE = [
@@ -60,6 +61,15 @@ CORS_ORIGIN_WHITELIST = ("http://localhost:3000",)
 CSRF_COOKIE_NAME = "XCSRF-TOKEN"
 
 ROOT_URLCONF = "ebusserver.urls"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
+}
+
+AUTH_USER_MODEL = "transit_user.User"
 
 TEMPLATES = [
     {

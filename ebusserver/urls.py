@@ -18,10 +18,11 @@ from django.conf import settings
 from django.urls import path, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('transit.urls')),
-    
+    path("admin/", admin.site.urls),
+    path("user/", include("transit.user.urls")),
+    path("", include("transit.urls")),
 ]
 
 if settings.DEBUG:

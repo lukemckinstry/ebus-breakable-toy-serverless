@@ -2,15 +2,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from .serializers import AgencySerializer, RouteSerializer
 from .models import Agency, Route
-from rest_framework import viewsets
-
-from .serializers import AgencySerializer, RouteSerializer
-from .models import Agency, Route
-from rest_framework import viewsets
-
-from .serializers import AgencySerializer, RouteSerializer
-from .models import Agency, Route
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 
 
 def index(request):
@@ -48,6 +40,7 @@ class RouteViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = RouteSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         agency = self.kwargs.get("agency_pk")  # supports get request by agency endpoint

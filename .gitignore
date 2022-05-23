@@ -171,3 +171,8 @@ static/
 
 #gtfs 
 gtfs/gtfs
+
+#terraform
+.terraform
+*.tfstate*
+*.tfstate

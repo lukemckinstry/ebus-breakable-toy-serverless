@@ -50,3 +50,9 @@ This project uses [`scripts-to-rule-them-all`](https://github.com/azavea/archite
 | `setup`     | Setup the project development environment                  |
 | `test`      | Run linters and tests                                      |
 | `update`    | Update project, assemble, run migrations                   |
+| `cipublish` | Build and publish image to AWS container registry          |
+| `infra`     | Execute Terraform subcommands with remote state management |
+
+### Deployment
+
+Use `./scripts/cipublish` to build and publish container images for the project to AWS ECR. Use `python deploy/update_ecs/py --cluster app --service ebus_app` to update the task definition of the ECS service to use the latest published container image.

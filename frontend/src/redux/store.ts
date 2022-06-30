@@ -3,12 +3,6 @@ import { combineReducers } from 'redux'
 import {
     persistStore,
     persistReducer,
-    FLUSH,
-    REHYDRATE,
-    PAUSE,
-    PERSIST,
-    PURGE,
-    REGISTER,
 } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import countReducer from './features/count'
@@ -28,6 +22,7 @@ const reducers = combineReducers({
 const persistConfig = {
     key: 'root',
     version: 1,
+    blacklist: ['agency', 'route'],
     storage,
 }
 

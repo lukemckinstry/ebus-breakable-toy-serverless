@@ -57,6 +57,7 @@
     "mapbox-gl": "^2.8.2",
     "react-redux": "^8.0.1",
     "redux": "^4.2.0",
-    "styled-components": "^5.3.5"
+    "styled-components": "^5.3.5",
+    "worker-loader": "^3.0.8"
   }
 }

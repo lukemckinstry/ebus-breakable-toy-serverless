@@ -1,7 +1,13 @@
 import React, { useEffect, useRef, useState, Dispatch } from "react";
-import { useAppSelector, useAppDispatch } from '../hooks'
-import mapboxgl from "mapbox-gl";
+import { useAppSelector } from '../hooks'
+import mapboxgl from 'mapbox-gl';
 import "mapbox-gl/dist/mapbox-gl.css";
+// The following is required to stop "npm build" from transpiling mapbox code.
+// notice the exclamation point in the import.
+// @ts-ignore
+// eslint-disable-next-line import/no-webpack-loader-syntax, import/no-unresolved
+mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
+
 
 
 let Map = () => {
@@ -21,7 +27,7 @@ let Map = () => {
             "source": {
 
                 type: 'vector',
-                tiles: ['http://localhost:9202/route/tiles?tile={z}/{x}/{y}'],
+                tiles: [`${window.location}api/route/tiles?tile={z}/{x}/{y}`],
                 minzoom: 1,
                 maxzoom: 8,
             },
@@ -43,16 +49,6 @@ let Map = () => {
         mapboxgl.accessToken =
             "pk.eyJ1IjoiYXphdmVhIiwiYSI6IkFmMFBYUUUifQ.eYn6znWt8NzYOa3OrWop8A";
         const initializeMap = (setMap: Dispatch<mapboxgl.Map>) => {
-            var [xmin, ymin, xmax, ymax] = [
-                -20.026114086648512,
-                -13.080309755245814,
-                19.700190980283185,
-                12.703790184833048,
-            ];
-
-            var url = new URL(window.location.href);
-            var embedParam = url.searchParams.get("embed");
-            const embed = embedParam === "true" ? true : false;
 
             const map = new mapboxgl.Map({
                 container: MAP_CONTAINER_ID,
@@ -62,11 +58,6 @@ let Map = () => {
                 pitch: 0,
                 minZoom: 2.1,
                 maxZoom: 11,
-                //hash: false,
-                // maxBounds: [
-                //     [xmin - 40, ymin - 40],
-                //     [xmax + 40, ymax + 40],
-                // ],
             });
 
             var nav = new mapboxgl.NavigationControl({
@@ -75,35 +66,13 @@ let Map = () => {
             });
 
             map.addControl(nav, "top-left");
-
-
-            // map.fitBounds(
-            //     [
-            //         [xmax, ymax],
-            //         [xmin, ymin],
-            //     ],
-            //     {
-            //         padding: embed
-            //             ? 5
-            //             : {
-            //                 left: 10,
-            //                 right: 340,
-            //                 top: 0,
-            //                 bottom: 0,
-            //             },
-            //     }
-            // );
-            //initZoomToState(map);
             map.dragRotate.disable();
             map.doubleClickZoom.disable();
             map.touchZoomRotate.disableRotation();
             map.on("load", () => {
-                console.log('onLoad')
                 setMap(map);
                 loadTiles(map);
-                //loadMap(map);
             });
-            //window.history.replaceState({}, "", "/");
         };
 
         if (!map) {

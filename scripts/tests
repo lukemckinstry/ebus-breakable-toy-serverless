@@ -20,7 +20,7 @@ then
         usage
     else
         echo "Running tests..."
-        docker-compose up -d
-        docker-compose exec web python manage.py test
+        docker compose up -d
+        docker compose exec web python manage.py test
     fi
 fi

@@ -28,19 +28,19 @@ if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
         
         # Build app container image first
         docker compose \
-            -f docker compose.yml \
+            -f docker-compose.yml \
             build ebus-client
 
         # Install frontend NPM modules
         docker compose \
-            -f docker compose.yml \
+            -f docker-compose.yml \
             run --rm --no-deps ebus-client \
             npm install
 
         # Build static asset bundle for React frontend
         # Separated to build app static assets before copied to django container
         docker compose \
-            -f docker compose.yml \
+            -f docker-compose.yml \
             run --rm --no-deps ebus-client \
             npm run build
 

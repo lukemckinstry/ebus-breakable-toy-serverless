@@ -19,6 +19,6 @@ then
     then
         usage
     else
-        docker-compose up
+        docker compose up
     fi
 fi

@@ -21,12 +21,12 @@ if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
         ./scripts/update
         
         # Bring up PostgreSQL and Django
-        docker-compose up -d
+        docker compose up -d
 
         # Create Django superuser
-        docker-compose exec web python manage.py createsuperuser     
+        docker compose exec web python manage.py createsuperuser     
 
-        docker-compose down
+        docker compose down
 
     fi
 fi

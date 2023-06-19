@@ -27,20 +27,20 @@ if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
         sudo chown -R $(id -u $USER):$(id -u $USER) ./data/db
         
         # Ensure container images are current
-        docker-compose build
+        docker compose build
 
         # Bring up PostgreSQL and Django
-        docker-compose up -d
+        docker compose up -d
 
         # Apply any outstanding Django migrations
-        docker-compose exec web python manage.py migrate
+        docker compose exec web python manage.py migrate
 
         # Collect Django static files
-        docker-compose exec web python manage.py collectstatic --no-input
+        docker compose exec web python manage.py collectstatic --no-input
 
         #gather & load a sample gtfs file for testing purposes 
-        docker-compose exec web python manage.py loadfeeds --sample
+        docker compose exec web python manage.py loadfeeds --sample
         
-        docker-compose down
+        docker compose down
     fi
 fi

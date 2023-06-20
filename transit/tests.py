@@ -7,7 +7,7 @@ from rest_framework.test import APITestCase, APIRequestFactory, force_authentica
 from django.test import TestCase
 from django.core.management import call_command
 import json
-
+from django.contrib.gis.geos import GEOSGeometry
 
 class LoadfeedsTests(TestCase):
     def test_loadfeeds(self):
@@ -80,6 +80,51 @@ def create_route(self, agency, user):
     response = view(request)
 
     return response
+
+geom_1 = { "type": "MultiLineString",
+    "coordinates": [
+        [ [100.0, 0.0], [101.0, 1.0] ],
+        [ [102.0, 2.0], [103.0, 3.0] ]
+  ] }
+
+geom_2 = { "type": "MultiLineString",
+    "coordinates": [
+        [ [50.0, 0.0], [51.0, 1.0] ],
+        [ [52.0, 2.0], [53.0, 3.0] ]
+  ] }
+
+def data_for_route_with_geometry(geom):
+    data = {
+        "type": "Feature",
+        "geometry": geom
+        ,
+        "properties":
+        {
+            "route_id": "999",
+            "route_short_name": "W",
+            "route_long_name": "W",
+            "route_desc": "",
+            "route_type": "3",
+            "route_url": "http://realtime.catabus.com/InfoPoint/46",
+            "route_color": "999900",
+            "route_text_color": "FFFFFF",
+            "route_sort_order": "21",
+            "route_distance": 41527.6023805,
+            "trips_monday": 0,
+            "trips_tuesday": 0,
+            "trips_wednesday": 0,
+            "trips_thursday": 0,
+            "trips_friday": 0,
+            "trips_saturday": 0,
+            "trips_sunday": 0,
+            "zev_charging_infrastructure": False,
+            "zev_notes": None,
+            "pct_zev_service": None,
+            "num_zev": None
+        }
+    }
+    return data
+    
 
 
 class AgencyTests(APITestCase):
@@ -181,3 +226,54 @@ class RouteTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Route.objects.count(), 1)
         self.assertEqual(Route.objects.get().route_id, "888")
+
+
+class RouteBatchTests(APITestCase):
+    def test_create_route_with_geometry(self):
+        """
+        Ensure we can create a new route object with geometry.
+        """
+        _ = create_agency(self)
+        agency = Agency.objects.get()
+        #_ = create_user(self)
+        #user = User.objects.get()
+        url = reverse("route-batch-list",
+                args=[
+                    agency.id,
+                ],
+            )
+        request_data = data_for_route_with_geometry(geom_1)
+        response = self.client.post(url, request_data, format='json')    
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Route.objects.count(), 1)
+        self.assertEqual(Route.objects.get().route_id, "999")
+
+    def test_update_route_with_geometry(self):
+        """
+        Ensure we can update a route object with geometry.
+        """
+        _ = create_agency(self)
+        agency = Agency.objects.get()
+        #_ = create_user(self)
+        #user = User.objects.get()
+        url = reverse("route-batch-list",
+                args=[
+                    agency.id,
+                ],
+            )
+        request_data = data_for_route_with_geometry(geom_1)
+        response = self.client.post(url, request_data, format='json')
+        initial_geom = GEOSGeometry(str(response.data["geometry"]))
+        route = Route.objects.get()
+        url = reverse("route-batch-detail",
+                args=[
+                    route.id,
+                ],
+            )
+        request_data = data_for_route_with_geometry(geom_2)
+        response = self.client.put(url, request_data, format='json')
+        updated_geom = GEOSGeometry(str(response.data["geometry"]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Route.objects.count(), 1)
+        self.assertEqual(Route.objects.get().route_id, "999")
+        self.assertEqual(initial_geom.equals(updated_geom), False)

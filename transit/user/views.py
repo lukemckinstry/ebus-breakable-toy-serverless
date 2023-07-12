@@ -12,7 +12,6 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
 
     def create(self, request, *args, **kwargs):
-        print("user create views")
         serializer = self.get_serializer(data=request.data)
 
         serializer.is_valid(raise_exception=True)

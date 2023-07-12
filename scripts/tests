@@ -21,6 +21,6 @@ then
     else
         echo "Running tests..."
         docker compose up -d
-        docker compose exec web python manage.py test
+        docker compose exec web python manage.py test ${1}
     fi
 fi

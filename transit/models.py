@@ -76,7 +76,7 @@ class Route(models.Model):
     route_sort_order = models.CharField(max_length=50, blank=True)
 
     # GeoDjango-specific: a geometry field
-    mpoly = models.MultiLineStringField(srid=4326, blank=True, null=True)
+    geometry = models.MultiLineStringField(srid=4326, blank=True, null=True)
 
     route_distance = models.FloatField(blank=True, null=True)  ### calculated
 
@@ -95,7 +95,7 @@ class Route(models.Model):
     num_zev = models.IntegerField(blank=True, null=True)
 
     ### managed by djangorestframework-mvt
-    vector_tiles = MVTManager(geo_col="mpoly")
+    vector_tiles = MVTManager(geo_col="geometry")
     objects = models.Manager()
 
     # Returns the string representation of the model.

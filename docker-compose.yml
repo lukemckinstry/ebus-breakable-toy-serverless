@@ -1,4 +1,4 @@
-version: "2.1"
+version: "3.7"
 
 services:
   ebus-client:
@@ -42,3 +42,21 @@ services:
     depends_on:
       db:
         condition: service_healthy
+  
+  api:
+    build: ./api
+    volumes:
+      - ./api:/app
+    ports:
+      - '4000:4000'
+    command: yarn dev
+  dynamodb:
+    container_name: dynamodb_local
+    image: amazon/dynamodb-local
+    ports:
+      - "8000:8000"
+    volumes:
+      - dynamodata:/home/dynamodblocal
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ."
+volumes:
+  dynamodata: {}
